@@ -1,7 +1,7 @@
 # Freshrelease-CSV-Export
 
 
-## Setup
+### Setup
  1. Please download the Plugin File
     [Here](https://github.com/prabakaranfresh/Freshrelease-CSV-Export/archive/master.zip) and unzip or clone this repo in your local machine.
     
@@ -12,10 +12,14 @@
  4. Click on '**Load unpacked**' and then chose the downloaded zip to Folder - '**Freshrelease-CSV-Export** ' 
  5. You are all set!
 
----
+
 
 You can now find the 'Export CSV' button in the work items page and the sprint planning page. Click on the button to download the data displayed the screen.
 
 ---
 
+#### Known Issues
+ 1. Navigating through the browser's back / front navigations may not trigger the button to load. For which, the page has to be reloaded to see the 'Export CSV' button
+
+---
 *Note: This Extension is not published as this plugin is for temporary use only*
