@@ -1,58 +1,52 @@
 (function() {
     //All Code inside this only
     jQuery(document).ready(function () {
-         var repositionBtn = function () {
-             if(jQuery('#newSprint').length) {
-                 var btnPositions = {
-                     top: jQuery('#newSprint').offset().top,
-                     left: jQuery('#newSprint').offset().left - jQuery('#newSprint').width() - 50
-                 }
-                 jQuery('#csvExport').css('position', 'absolute');
-                 jQuery('#csvExport').css('top', btnPositions.top);
-                 jQuery('#csvExport').css('left', btnPositions.left);
-             }
-         }
 
-         var positionBtnWI = function () {
-             if (jQuery('#issue_sort').length) {
-                 var btnPositions = {
-                     top: jQuery('#issue_sort').offset().top,
-                     left: jQuery('#issue_sort').offset().left - jQuery('#csvExport').width() - 50
-                 }
-                 jQuery('#csvExport').css('position', 'absolute');
-                 jQuery('#csvExport').css('top', btnPositions.top);
-                 jQuery('#csvExport').css('left', btnPositions.left);
-             }
-         }
+        
+        var initExport = function(elem, func_name) {
+            clearInterval(window.CSVExpLoadInt);
+            window.CSVExpLoadInt = setInterval(function () {
+                if (jQuery(elem).length) {
+                    clearInterval(window.CSVExpLoadInt);
+                    eval(func_name + '()');
+                }
+            }, 250)
+        }
+
+        var downloadCSV = function (content, title) {
+            var csvContent = "data:text/csv;charset=utf-8," + content.replace(/\#/g, ' ');
+            var dataurl = encodeURI(csvContent);
+            var a = document.createElement("a");
+            a.href = dataurl;
+            a.target = "_blank";
+            a.setAttribute("download", title + " - CSV Plugin Download.csv");
+            var b = document.createEvent("MouseEvents");
+            b.initEvent("click", false, true);
+            a.dispatchEvent(b);
+        }
+
+        var alterBtnonViewUpdate = function () {
+            jQuery('#csvExport').remove();
+            jQuery('button[data-view="list-view"]').click(function () {
+                initExport('#issue_sort', 'wiPageExport');
+            });
+        }
 
         var wiPageExport = function () {
-            if (jQuery('#issue_sort').length) {
+            if (jQuery('.header-secondary.issues-filter').length && jQuery('#issue_sort').length) {
                 if (jQuery('#csvExport').length) jQuery('#csvExport').remove();
                 var btn = jQuery('<button id="csvExport" class="btn btn--primary" />').text('Export CSV');
-                jQuery('body').append(btn);
-                positionBtnWI();
-                jQuery(window).on('resize', function () {
-                    positionBtnWI();
-                });
+                var li = document.createElement('li');
+                li.className = "page-action__list--item";
+                jQuery(li).append(btn);
+                jQuery('.header-secondary.issues-filter #issue_sort').parent().prepend(li);
                 setTimeout(function () {
                     if (jQuery('button[data-view="list-view"]').hasClass('app-icon-btn--active')) {
                         jQuery('button[data-view="kanban-view"]').click(function () {
-                            jQuery('#csvExport').remove();
+                            alterBtnonViewUpdate();
                         });
-                        positionBtnWI();
                     }
-                    else {
-                        jQuery('#csvExport').remove();
-                        jQuery('button[data-view="list-view"]').click(function () {
-                            clearInterval(window.CSVExpLoadInt);
-                            window.CSVExpLoadInt = setInterval(function () {
-                                if (jQuery('#issue_sort').length) {
-                                    clearInterval(window.CSVExpLoadInt);
-                                    wiPageExport();
-                                }
-                            }, 250)
-                        })
-                    }
+                    else alterBtnonViewUpdate();
                 },300);
                 jQuery('#csvExport').click(function (params) {
                     var textLOTR = 'Key,Title,Assignee,Type,Priority,Status,Estimate\n';
@@ -67,30 +61,17 @@
 
                         textLOTR += key + ',"' + title + '",' + assignee + ',' + type + ',' + pri + ',' + status + ',' + est + ',' + '\n';
                     });
-                    var csvContent = "data:text/csv;charset=utf-8," + textLOTR.replace(/\#/g, ' ');
-                    var dataurl = encodeURI(csvContent);
-                    var a = document.createElement("a");
-                    a.href = dataurl;
-                    a.target = "_blank";
-                    a.setAttribute("download", jQuery(".sprint-list--header__title").text().trim() + " - CSV Plugin Download.csv");
-                    var b = document.createEvent("MouseEvents");
-                    b.initEvent("click", false, true);
-                    a.dispatchEvent(b);
+                    downloadCSV(textLOTR, jQuery("#filterAction_dropdown p, .filter-label").text().trim());
                 })
             }
 
         }
 
-
-         var sprintPageExport = function () {
+        var sprintPageExport = function () {
              if (jQuery('#newSprint').length) {
                     if (jQuery('#csvExport').length) jQuery('#csvExport').remove();
                     var btn = jQuery('<button id="csvExport" class="btn btn--primary" />').text('Export CSV');
-                    jQuery('body').append(btn);
-                    repositionBtn();
-                    jQuery(window).on('resize', function () {
-                        repositionBtn();
-                    });
+                    jQuery('#newSprint').parent().prepend(btn);
                     jQuery('#csvExport').click(function (params) {
                         var textLOTR = 'Title,Key,Estimate\n';
                         jQuery(".cp-Panel-body-inner .issue-list-item").each(function () {
@@ -99,73 +80,36 @@
                             var est = jQuery(this).find(".issue-list_story-points span").text().trim();
                             textLOTR += '"' + sub + '",' + key + ',' + est + '\n';
                         });
-                        var csvContent = "data:text/csv;charset=utf-8," + textLOTR.replace(/\#/g, ' ');
-                        var dataurl = encodeURI(csvContent);
-                        var a = document.createElement("a");
-                        a.href = dataurl;
-                        a.target = "_blank";
-                        a.setAttribute("download", jQuery(".sprint-list--header__title").text().trim() + " - CSV Plugin Download.csv");
-                        var b = document.createEvent("MouseEvents");
-                        b.initEvent("click", false, true);
-                        a.dispatchEvent(b);  
+                        downloadCSV(textLOTR, jQuery(".sprint-list--header__title").text().trim());
                     })
-             }
-            
-         }
-
-
-        var checkForSprintBoard = function () {
-            if (document.location.pathname == '/sprints/planning') {
-                window.CSVExpLoadInt = setInterval(function () {
-                    if (jQuery('#newSprint').length) {
-                        clearInterval(window.CSVExpLoadInt);
-                        sprintPageExport();
-                    }
-                }, 250)
-            } else if ((document.location.pathname).indexOf('/issues/filter') >= 0) {
-                clearInterval(window.CSVExpLoadInt);
-                window.CSVExpLoadInt = setInterval(function () {
-                    if (jQuery('#issue_sort').length) {
-                        clearInterval(window.CSVExpLoadInt);
-                        wiPageExport();
-                    }
-                }, 250)
-            } else if (jQuery('#csvExport').length) {
-                jQuery('#csvExport').remove();
-            }
+             }    
         }
-        checkForSprintBoard();
          
         jQuery(document).on("click", ".nav-primary-list__item-link, a", function (e) {
             if (e.target.href != undefined) {
                 if ((e.target.href).indexOf('/sprints/planning') >= 0) {
-                    clearInterval(window.CSVExpLoadInt);
-                    window.CSVExpLoadInt = setInterval(function () {
-                        if (jQuery('#newSprint').length) {
-                            clearInterval(window.CSVExpLoadInt);
-                            sprintPageExport();
-                        }
-                    }, 250)
+                    initExport('#newSprint', 'sprintPageExport');
                 } else if ((e.target.href).indexOf('/issues/filter') >= 0 || (e.target.href).split('/').pop() == 'issues') {
-
-                    clearInterval(window.CSVExpLoadInt);
-                    window.CSVExpLoadInt = setInterval(function () {
-                        if (jQuery('#issue_sort').length) {
-                            clearInterval(window.CSVExpLoadInt);
-                            wiPageExport();
-                        }
-                    }, 250)
+                    initExport('#issue_sort', 'wiPageExport');
                 } else if (jQuery('#csvExport').length) {
                     jQuery('#csvExport').remove();
-                } else if (jQuery('#csvExport').length) {
-                    jQuery('#csvExport').remove();
-                }
+                } 
+            } else if (jQuery('#csvExport').length) {
+                jQuery('#csvExport').remove();
             }
         });
 
-    })
-        
-       
-    
+        var checkForSprintBoard = function () {
+            if (document.location.pathname == '/sprints/planning') {
+                initExport('#newSprint', 'sprintPageExport');
+            } else if ((document.location.pathname).indexOf('/issues/filter') >= 0) {
+                initExport('#issue_sort', 'wiPageExport');
+            } else if (jQuery('#csvExport').length) {
+                jQuery('#csvExport').remove();
+            }
+        }
 
+        checkForSprintBoard();
+
+    });
 })();

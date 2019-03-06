@@ -5,9 +5,24 @@
             width: 400px;
             background: #333;
             color: #fff;
+            padding-bottom: 30px;
         }
         .hide {
             display: none;
+        }
+        #footer {
+            background: #fff;
+            color: #444;
+            font-size: 14px;
+            width: 100%;
+            padding: 5px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+        #footer a {
+            color: #000;
+            font-weight: bold;
         }
     </style>
 
@@ -17,7 +32,10 @@
         <h2>Oops! This plugin works only on the Freshrelease site</h2>
     </div>
     <div id="valid_url" class="hide">
-        <h2>You can find the 'Export CSV' Button on Work Items Page and Sprint Planning Page. That will help you to export the page data to CSV format.</h2>
+        <p>You can find the '<b>Export CSV</b>' Button on Work Items Page and Sprint Planning Page. <br/>That will help you to export the page data to CSV format.</p>
+    </div>
+    <div id="footer">
+        For Issues, please report in <a id='index_link' href="https://github.com/prabakaranfresh/Freshrelease-CSV-Export">GitHub</a>
     </div>
 </body>
 
