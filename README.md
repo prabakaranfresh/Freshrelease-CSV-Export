@@ -18,4 +18,4 @@ You can now find the 'Export CSV' button in the work items page and the sprint p
 
 ---
 
-*Note: This Extension is not published as this plugin is for temporary use only
+*Note: This Extension is not published as this plugin is for temporary use only*
