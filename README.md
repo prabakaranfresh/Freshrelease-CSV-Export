@@ -1,7 +1,11 @@
 # Freshrelease-CSV-Export
 
+### Installation
 
-### Setup
+:point_right: For Installing the Plugin, please [click here](https://chrome.google.com/webstore/detail/freshrelease-csv-export/jpjbbkbebfiickldilekohjchcmoabej) from your chrome browser
+
+
+### Development Setup
  1. Please download the Plugin File
     [Here](https://github.com/prabakaranfresh/Freshrelease-CSV-Export/archive/master.zip) and unzip or clone this repo in your local machine.
     
@@ -21,5 +25,3 @@ You can now find the 'Export CSV' button in the work items page and the sprint p
 #### Known Issues
  1. Navigating through the browser's back / front navigations may not trigger the button to load. For which, the page has to be reloaded to see the 'Export CSV' button
 
----
-*Note: This Extension is not published as this plugin is for temporary use only*
